@@ -5,6 +5,7 @@ authors = ["Jakub Konka <jakub.konka@golem.network>"]
 edition = "2018"
 
 [dependencies]
+nix = "0.13"
 
 [[bin]]
 name = "lsh"
