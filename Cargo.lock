@@ -1,4 +1,4 @@
 [[package]]
-name = "sshell"
+name = "lsh-shell"
 version = "0.1.0"
 
