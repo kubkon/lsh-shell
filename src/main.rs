@@ -7,6 +7,15 @@ enum Status {
     Exit,
 }
 
+fn cd(args: &[&str]) -> Status {
+    if args.len() > 1 {
+        // handle errors...
+    }
+    unistd::chdir(args[0]).expect("couldn't change directory");
+
+    Status::Ok
+}
+
 fn pwd() -> Status {
     let dir = unistd::getcwd().expect("cannot get present working directory");
     println!("{}", dir.to_str().expect("failed to convert to str"));
@@ -15,11 +24,7 @@ fn pwd() -> Status {
     Status::Ok
 }
 
-fn lsh_exec<'a, It>(args: It) -> Status
-where
-    It: IntoIterator<Item = &'a str>,
-{
-    let args: Vec<&str> = args.into_iter().collect();
+fn lsh_exec(args: &[&str]) -> Status {
     if args.is_empty() {
         return Status::Ok;
     }
@@ -27,6 +32,7 @@ where
     let cmd = args[0];
     match cmd {
         "pwd" => pwd(),
+        "cd" => cd(&args[1..]),
         "exit" => Status::Exit,
         _ => Status::Ok,
     }
@@ -42,7 +48,8 @@ fn lsh_loop() {
             .read_line(&mut line)
             .unwrap_or_else(|err| panic!("unexpected error occurred reading from stdin: {}", err));
 
-        if lsh_exec(line.split_whitespace()) == Status::Exit {
+        let args: Vec<&str> = line.split_whitespace().collect();
+        if lsh_exec(&args) == Status::Exit {
             break;
         }
     }
